@@ -35,7 +35,6 @@ impl Graph {
                 break;
             } else if line == "NODE_COORD_SECTION" {
                 flag = true;
-                println!("flag update");
             } else if flag {
                 let nums: Vec<i32> = line
                     .split_whitespace()
@@ -47,6 +46,13 @@ impl Graph {
         }
 
         Graph { size, coords }
+    }
+
+    fn weight(&self, i: usize, j: usize) -> f32 {
+        let (x1, y1) = self.coords[i];
+        let (x2, y2) = self.coords[j];
+        let norm = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+        (norm as f32).sqrt()
     }
 }
 
@@ -79,7 +85,6 @@ impl<'a> Solution<'a> {
                 break;
             } else if line == "TOUR_SECTION" {
                 flag = true;
-                println!("flag update");
             } else if flag {
                 let id_node: usize = line.split_whitespace().last().unwrap().parse().unwrap();
                 let id_node = id_node - 1;
@@ -89,12 +94,25 @@ impl<'a> Solution<'a> {
 
         Solution { graph, path }
     }
+
+    fn score(&self) -> f32 {
+        let score = self.path
+            .windows(2)
+            .map(|ws| (ws[0], ws[1]))
+            .map(|(i, j)| self.graph.weight(i, j))
+            .sum();
+
+        score
+    }
 }
 
 fn main() {
     let cli = Cli::parse();
     println!("{}", cli.input_file);
-    println!("{}", cli.output_file.as_ref().unwrap_or(&"No File".to_string()));
+    println!(
+        "{}",
+        cli.output_file.as_ref().unwrap_or(&"No File".to_string())
+    );
 
     let graph = Graph::from_file(&cli.input_file);
     let solution = if let Some(output_file) = cli.output_file {
@@ -103,8 +121,7 @@ fn main() {
         Solution::new(&graph)
     };
 
-    // let solution = Solution::new(&graph);
-    // println!("{:?}", graph);
-    println!("{:?}", solution);
-    // println!("{:#?}", solution);
+    let init_solution = Solution::new(&graph);
+    println!("init_solution: {}", init_solution.score());
+    println!("input_solution: {}", solution.score());
 }
