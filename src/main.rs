@@ -2,6 +2,7 @@ use clap::Parser;
 
 mod graph;
 mod solution;
+mod solver_sa;
 
 #[derive(Parser)]
 #[command(version, about, long_about=None)]
@@ -25,4 +26,10 @@ fn main() {
 
     println!("init_solution: {}", init_solution.score());
     println!("input_solution: {}", solution.score());
+
+    let graph = graph::Graph::from_file(&cli.input_file);
+    let solver = solver_sa::SolverSA::from_graph(graph);
+    let solution = solver.solve();
+    println!("optimized_solution: {}", solution.score());
+
 }
