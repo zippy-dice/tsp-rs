@@ -31,5 +31,4 @@ fn main() {
     let solver = solver_sa::SolverSA::from_graph(graph);
     let solution = solver.solve();
     println!("optimized_solution: {}", solution.score());
-
 }

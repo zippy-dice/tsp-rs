@@ -1,9 +1,12 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
+use rand;
+use rand::Rng;
+
 use crate::graph::Graph;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Solution<'a> {
     graph: &'a Graph,
     path: Vec<usize>,
@@ -40,6 +43,20 @@ impl<'a> Solution<'a> {
         }
 
         Solution { graph, path }
+    }
+
+    pub fn swap_2_opt(&mut self) {
+        let mut rng = rand::thread_rng();
+        let size = self.graph.size;
+        let idx1 = rng.gen_range(0..size);
+        let mut idx2 = rng.gen_range(0..size);
+        while idx1 == idx2 {
+            idx2 = rng.gen_range(0..size); // 同じインデックスが選ばれないようにする
+        }
+
+        // TODO リバースする
+
+        self.path.swap(idx1, idx2)
     }
 
     pub fn score(&self) -> f32 {
