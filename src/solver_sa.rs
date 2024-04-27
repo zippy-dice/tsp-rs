@@ -29,7 +29,7 @@ impl SolverSA {
 
         for i in 0..lim {
             let prev_solution = solution.clone();
-            solution.swap_2_opt();
+            Self::transition(&mut solution);
             let new_score = solution.score();
             if new_score < best_score {
                 best_solution = solution.clone();
@@ -46,7 +46,8 @@ impl SolverSA {
             // let random_number: f32 = rng.gen();
             if delta <= 0. {
                 score = new_score;
-            } else if rng.gen::<f64>() < (-delta / temperture).exp() {
+            // } else if rng.gen::<f64>() < (-delta / temperture).exp() {
+            } else if rng.gen_bool((-delta / temperture).exp()) {
                 score = new_score;
                 println!(
                     "Accepted bad transition. loop {}. score: {}, temperture: {:e}",
@@ -59,6 +60,15 @@ impl SolverSA {
         }
 
         best_solution
+    }
+
+    fn transition(solution: &mut Solution) {
+        let mut rng = rand::thread_rng();
+        if rng.gen_bool(0.5) {
+            solution.swap_2_opt();
+        } else {
+            solution.swap_3_opt();
+        }
     }
 }
 

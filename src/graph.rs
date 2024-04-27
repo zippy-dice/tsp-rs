@@ -1,10 +1,10 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Graph {
     pub size: usize,
-    pub coords: Vec<(i32, i32)>,
+    pub coords: Vec<(f32, f32)>,
 }
 
 impl Graph {
@@ -26,7 +26,7 @@ impl Graph {
             } else if line == "NODE_COORD_SECTION" {
                 flag = true;
             } else if flag {
-                let nums: Vec<i32> = line
+                let nums: Vec<f32> = line
                     .split_whitespace()
                     .map(|s| s.parse().unwrap())
                     .collect();
