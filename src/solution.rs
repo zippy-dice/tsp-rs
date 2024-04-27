@@ -45,7 +45,7 @@ impl<'a> Solution<'a> {
         Solution { graph, path }
     }
 
-    pub fn swap_2_opt(&mut self) {
+    pub fn random_2_opt(&mut self) {
         let mut rng = rand::thread_rng();
         let size = self.graph.size;
         let mut idx1 = rng.gen_range(0..size);
@@ -58,10 +58,18 @@ impl<'a> Solution<'a> {
             (idx1, idx2) = (idx2, idx1);
         }
 
-        self.path[idx1..=idx2].reverse();
+        self.swap_2_opt(idx1, idx2);
     }
 
-    pub fn swap_3_opt(&mut self) {
+    pub fn swap_2_opt(&mut self, i: usize, j: usize) {
+        let (mut i, mut j) = (i, j);
+        if i > j {
+            (i, j) = (j, i);
+        }
+        self.path[i..=j].reverse();
+    }
+
+    pub fn random_3_opt(&mut self) {
         let mut rng = rand::thread_rng();
         let size = self.graph.size;
 
@@ -75,21 +83,28 @@ impl<'a> Solution<'a> {
             (vec[0], vec[1], vec[2])
         };
 
+        let mut swap = rng.gen_bool(0.5);
+        let mut rev1 = rng.gen_bool(0.5);
+        let mut rev2 = rng.gen_bool(0.5);
+        while !swap && !rev1 && !rev2 {
+            swap = rng.gen_bool(0.5);
+            rev1 = rng.gen_bool(0.5);
+            rev2 = rng.gen_bool(0.5);
+        }
+
+        self.swap_3_opt(idx_a, idx_b, idx_c, swap, rev1, rev2);
+    }
+
+    pub fn swap_3_opt(&mut self, idx_a: usize, idx_b: usize, idx_c: usize, swap: bool, rev1: bool, rev2: bool) {
+        assert!(idx_a <= idx_b && idx_b <= idx_c);
+        let size = self.graph.size;
+
         let mut segments: Vec<Vec<usize>> = Vec::new();
         segments.push(self.path[..=idx_a].into());
         segments.push(self.path[idx_a + 1..=idx_b].into());
         segments.push(self.path[idx_b + 1..=idx_c].into());
         segments.push(self.path[idx_c + 1..size].into());
 
-        // println!("{:?}", segments);
-        let mut swap = rng.gen_bool(0.5);
-        let mut rev1 = rng.gen_bool(0.5);
-        let mut rev2 = rng.gen_bool(0.5);
-        if !swap && !rev1 && !rev2 {
-            swap = rng.gen_bool(0.5);
-            rev1 = rng.gen_bool(0.5);
-            rev2 = rng.gen_bool(0.5);
-        }
         if swap {
             segments[1..=2].reverse();
         }

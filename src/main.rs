@@ -23,10 +23,10 @@ fn main() {
     let graph = graph::Graph::from_file(&cli.input_file);
     let solver = solver_sa::SolverSA::from_graph(graph.clone());
     let params = solver_sa::Params::new()
-        .loops(10000000)
+        .loops(100000)
         // .loops(1)
-        .init_temperture(10.)
-        .temperture_decay_rate(1. - 5e-7);
+        .init_temperture(1.)
+        .temperture_decay_rate(1. - 5e-5);
     let solution = solver.solve(&params);
     println!("optimized_solution: {}", solution.score());
 

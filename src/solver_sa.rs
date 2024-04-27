@@ -65,9 +65,9 @@ impl SolverSA {
     fn transition(solution: &mut Solution) {
         let mut rng = rand::thread_rng();
         if rng.gen_bool(0.5) {
-            solution.swap_2_opt();
+            solution.random_2_opt();
         } else {
-            solution.swap_3_opt();
+            solution.random_3_opt();
         }
     }
 }
