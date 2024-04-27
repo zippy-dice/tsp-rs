@@ -13,7 +13,7 @@ impl SolverSA {
         SolverSA { graph }
     }
 
-    pub fn solve(&self) -> Solution {
+    pub fn solve(&self, params: &Params) -> Solution {
         let mut rng = rand::thread_rng();
 
         let mut solution = Solution::new(&self.graph);
@@ -22,10 +22,10 @@ impl SolverSA {
         let mut best_solution = solution.clone();
         let mut best_score = best_solution.score();
 
-        let lim = 1000000;
+        let lim = params.loops;
 
-        let mut temperture = 10.;
-        let temperture_decay_rate = 0.9999996;
+        let mut temperture = params.init_temperture;
+        let temperture_decay_rate = params.temperture_decay_rate;
 
         for i in 0..lim {
             let prev_solution = solution.clone();
@@ -48,7 +48,10 @@ impl SolverSA {
                 score = new_score;
             } else if rng.gen::<f64>() < (-delta / temperture).exp() {
                 score = new_score;
-                println!("Accepted bad transition. loop {}. score: {}, temperture: {:e}", i, score, temperture);
+                println!(
+                    "Accepted bad transition. loop {}. score: {}, temperture: {:e}",
+                    i, score, temperture
+                );
             } else {
                 solution = prev_solution;
             }
@@ -56,5 +59,36 @@ impl SolverSA {
         }
 
         best_solution
+    }
+}
+
+pub struct Params {
+    loops: usize,
+    init_temperture: f64,
+    temperture_decay_rate: f64,
+}
+
+impl Params {
+    pub fn new() -> Params {
+        Params {
+            loops: 10000,
+            init_temperture: 1000.,
+            temperture_decay_rate: 0.999,
+        }
+    }
+
+    pub fn loops(mut self, loops: usize) -> Self {
+        self.loops = loops;
+        self
+    }
+
+    pub fn init_temperture(mut self, init_temperture: f64) -> Self {
+        self.init_temperture = init_temperture;
+        self
+    }
+
+    pub fn temperture_decay_rate(mut self, temperture_decay_rate: f64) -> Self {
+        self.temperture_decay_rate = temperture_decay_rate;
+        self
     }
 }

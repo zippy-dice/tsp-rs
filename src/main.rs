@@ -29,6 +29,10 @@ fn main() {
 
     let graph = graph::Graph::from_file(&cli.input_file);
     let solver = solver_sa::SolverSA::from_graph(graph);
-    let solution = solver.solve();
+    let params = solver_sa::Params::new()
+        .loops(1000000)
+        .init_temperture(10.)
+        .temperture_decay_rate(0.99999);
+    let solution = solver.solve(&params);
     println!("optimized_solution: {}", solution.score());
 }
