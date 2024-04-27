@@ -48,15 +48,17 @@ impl<'a> Solution<'a> {
     pub fn swap_2_opt(&mut self) {
         let mut rng = rand::thread_rng();
         let size = self.graph.size;
-        let idx1 = rng.gen_range(0..size);
+        let mut idx1 = rng.gen_range(0..size);
         let mut idx2 = rng.gen_range(0..size);
         while idx1 == idx2 {
             idx2 = rng.gen_range(0..size); // 同じインデックスが選ばれないようにする
         }
 
-        // TODO リバースする
+        if idx1 > idx2 {
+            (idx1, idx2) = (idx2, idx1);
+        }
 
-        self.path.swap(idx1, idx2)
+        self.path[idx1..=idx2].reverse();
     }
 
     pub fn score(&self) -> f32 {
