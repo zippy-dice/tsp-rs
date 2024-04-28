@@ -11,9 +11,10 @@ impl SolverClimbing {
     }
 
     pub fn climbing(&self, solution: &mut Solution) -> bool {
-        let mut ij = None;
-        let mut best_diff = -1e-5;
+        const EPS: f32 = 1e-5;
         let n = self.graph.size;
+
+        let mut sijs = vec![];
 
         for idx_i in 0..n {
             for idx_j in idx_i + 1..n {
@@ -21,18 +22,23 @@ impl SolverClimbing {
                     continue;
                 }
                 let diff = solution.diff_score_2_opt(idx_i, idx_j);
-                if diff < best_diff {
-                    best_diff = diff;
-                    ij = Some((idx_i, idx_j));
+                if diff < -EPS {
+                    sijs.push((diff, idx_i, idx_j));
                 }
             }
         }
 
-        if let Some((i, j)) = ij {
-            solution.swap_2_opt(i, j);
-            true
-        } else {
-            false
+        sijs.sort_by(|left, right| left.0.partial_cmp(&right.0).unwrap());
+        let mut res = false;
+
+        for (_, i, j) in sijs {
+            let diff = solution.diff_score_2_opt(i, j);
+            if diff < -EPS {
+                solution.swap_2_opt(i, j);
+                res = true;
+            }
         }
+
+        res
     }
 }

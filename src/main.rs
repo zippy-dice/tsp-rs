@@ -49,11 +49,11 @@ fn solve_climbing() {
     let mut solution = solution::Solution::new(&graph);
     solver.climbing(&mut solution);
     println!("climbed_solution: {}", solution.score());
-    for _ in 0..1 {
+    for _ in 0..100 {
         solution.shuffle_path();
-        println!("init_solution: {} -> ", solution.score());
+        print!("init_solution: {} -> ", solution.score());
         while solver.climbing(&mut solution) {
-            println!("climbed_solution: {}", solution.score());
+            // println!("climbed_solution: {}", solution.score());
         }
         println!("final_solution: {}", solution.score());
     }

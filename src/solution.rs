@@ -88,57 +88,6 @@ impl<'a> Solution<'a> {
                 .graph
                 .weight(self.path[i], self.path[(j + 1) % n]);
 
-        // println!(
-        //     "prev_score: {}, after_score: {}, diff_score: {}",
-        //     self.score(),
-        //     tmp.score(),
-        //     diff_score
-        // );
-
-        // let mut tmp = self.clone();
-        // tmp.swap_2_opt(i, j);
-        // let after_score = tmp.score();
-        // let prev_score = self.score();
-
-        // if i > 0 && after_score - prev_score > diff_score + 1. {
-        //     println!(
-        //         "i = {}, j = {}, self.path[i] = {}, self.path[j] = {}",
-        //         i, j, self.path[i], self.path[j]
-        //     );
-
-
-        //     for v in self.path.windows(2) {
-        //         let i = v[0];
-        //         let j = v[1];
-        //         print!(
-        //             "{}-{}: {}, ",
-        //             i,
-        //             j,
-        //             self.graph.weight(i, j)
-        //         );
-        //     }
-        //     println!("");
-
-        //     for v in tmp.path.windows(2) {
-        //         let i = v[0];
-        //         let j = v[1];
-        //         print!(
-        //             "{}-{}: {}, ",
-        //             i,
-        //             j,
-        //             tmp.graph.weight(i, j)
-        //         );
-        //     }
-        //     println!("");
-
-        //     println!(
-        //         "prev_score: {}, after_score: {}, diff_score: {}",
-        //         prev_score, after_score, diff_score
-        //     );
-
-        //     stop();
-        // }
-
         diff_score
     }
 
