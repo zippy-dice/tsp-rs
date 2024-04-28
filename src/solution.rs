@@ -1,4 +1,5 @@
 use rand;
+use rand::seq::SliceRandom;
 use rand::Rng;
 use std::collections::HashSet;
 use std::fs::File;
@@ -6,16 +7,32 @@ use std::io::{BufRead, BufReader};
 
 use crate::graph::Graph;
 
+use std::io;
+
+fn stop() {
+    let mut buffer = String::new();
+
+    // 標準入力からの入力を待つ
+    io::stdin()
+        .read_line(&mut buffer)
+        .expect("Failed to read line");
+}
+
 #[derive(Debug, Clone)]
 pub struct Solution<'a> {
     graph: &'a Graph,
-    path: Vec<usize>,
+    pub path: Vec<usize>,
 }
 
 impl<'a> Solution<'a> {
     pub fn new(graph: &'a Graph) -> Solution<'a> {
         let path = (0..graph.size).collect();
         Solution { graph, path }
+    }
+
+    pub fn shuffle_path(&mut self) {
+        let mut rng = rand::thread_rng();
+        self.path.shuffle(&mut rng);
     }
 
     pub fn from_file(graph: &'a Graph, file_name: &str) -> Solution<'a> {
@@ -61,6 +78,70 @@ impl<'a> Solution<'a> {
         self.swap_2_opt(idx1, idx2);
     }
 
+    pub fn diff_score_2_opt(&self, i: usize, j: usize) -> f32 {
+        // 計算が合わん。　なんかバグってる
+        let n = self.graph.size;
+        let diff_score = -self.graph.weight(self.path[(n + i - 1) % n], self.path[i])
+            - self.graph.weight(self.path[j], self.path[(j + 1) % n])
+            + self.graph.weight(self.path[(n + i - 1) % n], self.path[j])
+            + self
+                .graph
+                .weight(self.path[i], self.path[(j + 1) % n]);
+
+        // println!(
+        //     "prev_score: {}, after_score: {}, diff_score: {}",
+        //     self.score(),
+        //     tmp.score(),
+        //     diff_score
+        // );
+
+        // let mut tmp = self.clone();
+        // tmp.swap_2_opt(i, j);
+        // let after_score = tmp.score();
+        // let prev_score = self.score();
+
+        // if i > 0 && after_score - prev_score > diff_score + 1. {
+        //     println!(
+        //         "i = {}, j = {}, self.path[i] = {}, self.path[j] = {}",
+        //         i, j, self.path[i], self.path[j]
+        //     );
+
+
+        //     for v in self.path.windows(2) {
+        //         let i = v[0];
+        //         let j = v[1];
+        //         print!(
+        //             "{}-{}: {}, ",
+        //             i,
+        //             j,
+        //             self.graph.weight(i, j)
+        //         );
+        //     }
+        //     println!("");
+
+        //     for v in tmp.path.windows(2) {
+        //         let i = v[0];
+        //         let j = v[1];
+        //         print!(
+        //             "{}-{}: {}, ",
+        //             i,
+        //             j,
+        //             tmp.graph.weight(i, j)
+        //         );
+        //     }
+        //     println!("");
+
+        //     println!(
+        //         "prev_score: {}, after_score: {}, diff_score: {}",
+        //         prev_score, after_score, diff_score
+        //     );
+
+        //     stop();
+        // }
+
+        diff_score
+    }
+
     pub fn swap_2_opt(&mut self, i: usize, j: usize) {
         let (mut i, mut j) = (i, j);
         if i > j {
@@ -95,7 +176,15 @@ impl<'a> Solution<'a> {
         self.swap_3_opt(idx_a, idx_b, idx_c, swap, rev1, rev2);
     }
 
-    pub fn swap_3_opt(&mut self, idx_a: usize, idx_b: usize, idx_c: usize, swap: bool, rev1: bool, rev2: bool) {
+    pub fn swap_3_opt(
+        &mut self,
+        idx_a: usize,
+        idx_b: usize,
+        idx_c: usize,
+        swap: bool,
+        rev1: bool,
+        rev2: bool,
+    ) {
         assert!(idx_a <= idx_b && idx_b <= idx_c);
         let size = self.graph.size;
 
