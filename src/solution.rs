@@ -84,9 +84,7 @@ impl<'a> Solution<'a> {
         let diff_score = -self.graph.weight(self.path[(n + i - 1) % n], self.path[i])
             - self.graph.weight(self.path[j], self.path[(j + 1) % n])
             + self.graph.weight(self.path[(n + i - 1) % n], self.path[j])
-            + self
-                .graph
-                .weight(self.path[i], self.path[(j + 1) % n]);
+            + self.graph.weight(self.path[i], self.path[(j + 1) % n]);
 
         diff_score
     }

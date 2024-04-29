@@ -10,7 +10,7 @@ impl SolverClimbing {
         SolverClimbing { graph }
     }
 
-    pub fn climbing(&self, solution: &mut Solution) -> bool {
+    pub fn climbing_2opt(&self, solution: &mut Solution) -> bool {
         const EPS: f32 = 1e-5;
         let n = self.graph.size;
 

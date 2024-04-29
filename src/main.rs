@@ -47,12 +47,12 @@ fn solve_climbing() {
     let graph = graph::Graph::from_file(&cli.input_file);
     let solver = solver_climbing::SolverClimbing::from_graph(graph.clone());
     let mut solution = solution::Solution::new(&graph);
-    solver.climbing(&mut solution);
+    solver.climbing_2opt(&mut solution);
     println!("climbed_solution: {}", solution.score());
     for _ in 0..100 {
         solution.shuffle_path();
         print!("init_solution: {} -> ", solution.score());
-        while solver.climbing(&mut solution) {
+        while solver.climbing_2opt(&mut solution) {
             // println!("climbed_solution: {}", solution.score());
         }
         println!("final_solution: {}", solution.score());
@@ -61,6 +61,6 @@ fn solve_climbing() {
 
 fn main() {
     let cli = Cli::parse();
-    // solve_sa();
-    solve_climbing();
+    solve_sa();
+    // solve_climbing();
 }
